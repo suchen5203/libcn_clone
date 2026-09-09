@@ -32,11 +32,9 @@
  * C 源里函数叫 SetCoolDown,但符号名是 _ZN16object_interface11SetCoolDownEti。
  * 这样源码可读,链接符号又是 GS 期望的。 */
 #define MANGLED(name, m) \
-    extern __attribute__((visibility("default"))) int name##_stub(void); \
     __asm__(".global " #m "\n" \
             ".type   " #m ", @function\n" \
-            #m " = " #name##_stub "\n"); \
-    int name##_stub(void)
+            #m " = " #name "\n")
 
 /* ---------- thiscall 调用 real 函数 ----------
  * GCC 默认按 cdecl 编译 C,我们要模拟 thiscall 调 GS 的 C++ 函数。
