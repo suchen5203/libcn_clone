@@ -4,11 +4,21 @@ on:
   push:
     branches: [main, master]
     paths:
-      - 'clone/**'
+      - 'src/**'
+      - 'docs/**'
+      - 'Makefile'
+      - 'Dockerfile'
+      - 'build.*'
+      - 'smoke_test.sh'
+      - 'push*.ps1'
+      - 'push*.sh'
+      - 'push*.bat'
       - '.github/workflows/build.yml'
   pull_request:
     paths:
-      - 'clone/**'
+      - 'src/**'
+      - 'Makefile'
+      - '.github/workflows/build.yml'
   workflow_dispatch:  # 允许手动触发
 
 jobs:
@@ -40,20 +50,17 @@ jobs:
             make
 
       - name: Build libcn_clone.so
-        working-directory: clone
         run: |
           make clean
           make USE_OPENSSL=1
           make check
 
       - name: Verify ELF output
-        working-directory: clone
         run: |
           file libcn_clone.so
           ls -la libcn_clone.so
 
       - name: Quick smoke test (load + check exports)
-        working-directory: clone
         run: |
           chmod +x smoke_test.sh
           ./smoke_test.sh || echo "(smoke test 跳过,需 32 位环境)"
@@ -63,8 +70,8 @@ jobs:
         with:
           name: libcn_clone
           path: |
-            clone/libcn_clone.so
-            clone/clone/data/*.data
+            libcn_clone.so
+            data/*.data
           if-no-files-found: warn
           retention-days: 14
 
