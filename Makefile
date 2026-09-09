@@ -10,13 +10,14 @@
 CC       ?= gcc
 CFLAGS   ?= -m32 -fPIC -O2 -Wall -Wextra -std=gnu99 -D_GNU_SOURCE
 LDFLAGS  ?= -m32 -shared -fPIC
+LDLIBS   ?=
 
 # 是否启用 OpenSSL AES(0 = 用 XOR 占位,1 = 用真 AES)
 USE_OPENSSL ?= 1
 
 ifeq ($(USE_OPENSSL),1)
 CFLAGS  += -DOpenSSL=1
-LDFLAGS += -lcrypto
+LDLIBS  += -lcrypto
 else
 CFLAGS  += -DOpenSSL=0
 endif
@@ -30,7 +31,7 @@ TARGET = libcn_clone.so
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<

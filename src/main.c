@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <dlfcn.h>
 
 #include "config.h"
 #include "hooks.h"

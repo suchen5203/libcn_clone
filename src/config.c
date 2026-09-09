@@ -94,8 +94,8 @@ int dlc_config_load(const char* path, dlc_config_t* cfg) {
     }
     cfg->main_count = cnt;
 
-    /* 拷贝到全局(只读引用 mmap 区即可,简化不复制) */
-    memcpy(&g_cfg, cfg, sizeof(*cfg) - sizeof(void*) - sizeof(size_t) - sizeof(uint32_t));
+    /* 拷贝到全局(结构体整体复制,再单独修正指针/大小/计数) */
+    memcpy(&g_cfg, cfg, sizeof(*cfg));
     g_cfg.main_body      = (uint8_t*)map;
     g_cfg.main_body_size = cfg->main_body_size;
     g_cfg.main_count     = cnt;
