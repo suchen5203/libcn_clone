@@ -1,0 +1,4 @@
+# res/ - 源数据文件目录
+# 包含 aipolicy.data / elements.data / gshop.data / tasks.data
+# 这些是游戏私有格式,通常不直接提交(由编辑器读取并重新打包成 resource.data)
+# 具体 .data 文件已在 .gitignore 中排除

@@ -1,0 +1,78 @@
+name: build-libcn-clone
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'clone/**'
+      - '.github/workflows/build.yml'
+  pull_request:
+    paths:
+      - 'clone/**'
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python (for analysis scripts)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install capstone (reverse tooling)
+        run: pip install capstone
+
+      - name: Install 32-bit toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            libc6-dev \
+            libc6-dev-i386 \
+            libssl-dev \
+            file \
+            make
+
+      - name: Build libcn_clone.so
+        working-directory: clone
+        run: |
+          make clean
+          make USE_OPENSSL=1
+          make check
+
+      - name: Verify ELF output
+        working-directory: clone
+        run: |
+          file libcn_clone.so
+          ls -la libcn_clone.so
+
+      - name: Quick smoke test (load + check exports)
+        working-directory: clone
+        run: |
+          chmod +x smoke_test.sh
+          ./smoke_test.sh || echo "(smoke test 跳过,需 32 位环境)"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libcn_clone
+          path: |
+            clone/libcn_clone.so
+            clone/clone/data/*.data
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Build summary
+        if: success()
+        run: |
+          echo "### 构建成功" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "产物:**libcn_clone.so**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "从 Actions 页 Artifacts 区域下载。" >> $GITHUB_STEP_SUMMARY

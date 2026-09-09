@@ -1,0 +1,60 @@
+# ============================================================
+# .gitignore - libcn_clone 仓库
+# 排除:构建产物 / 大型二进制 / IDE 临时文件 / 敏感数据
+# ============================================================
+
+# --- 构建产物 ---
+*.o
+*.so
+*.a
+*.lo
+*.la
+*.gcno
+*.gcda
+*.gcov
+*.out
+build/
+dist/
+
+# --- 运行时配置(通常不上,运营自留) ---
+libdlc.data
+resource.data
+ForDataEdit.DATA
+*.key
+
+# --- 大型二进制 / 逆向目标 ---
+# gs 服务端二进制(385 MB,GitHub 100MB 限制)
+gs
+*.exe
+*.dll
+*.dylib
+
+# --- IDE / 编辑器 ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- 系统/缓存文件 ---
+*.log
+*.logc
+*.tmp
+*.bak
+*.cache
+__pycache__/
+*.pyc
+*.pyo
+
+# --- 用户本地配置(避免误提交) ---
+.env
+.env.local
+*.local
+
+# --- 数据目录示例(若运营填了真实数据) ---
+data/*.data
+res/*.data
+editor/__pycache__/
